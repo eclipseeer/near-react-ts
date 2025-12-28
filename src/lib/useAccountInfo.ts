@@ -39,7 +39,12 @@ type UseAccountInfoOutput =
       isError: boolean;
     };
 
-export const useAccountInfo = ({ accountId }: { accountId: string }) => {
+type UseAccountInfoArgs = {
+  accountId: string;
+  networkId: string;
+};
+
+export const useAccountInfo = ({ accountId, networkId }: UseAccountInfoArgs) => {
   const [state, setState] = useState<UseAccountInfoOutput>({
     data: null,
     error: null,
@@ -52,11 +57,16 @@ export const useAccountInfo = ({ accountId }: { accountId: string }) => {
   const nearContext = useNearContext();
 
   useEffect(() => {
+    if (!nearContext.ok) return;
+
+    // TODO handle errors
+    const client = nearContext.context.networks[networkId].client;
+
     setState((prev) => ({ ...prev, isFetching: true }) as UseAccountInfoOutput);
     const controller = new AbortController();
 
     const fetchData = async () => {
-      const response = await nearContext.client.safeGetAccountInfo({
+      const response = await client.safeGetAccountInfo({
         accountId,
         options: { signal: controller.signal },
       });
@@ -97,7 +107,7 @@ export const useAccountInfo = ({ accountId }: { accountId: string }) => {
       console.log('Unmount');
       controller.abort(); // Cancel request when unmount
     };
-  }, [accountId]);
+  }, [accountId, nearContext]);
 
   return state;
 };

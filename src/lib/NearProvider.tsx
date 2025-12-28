@@ -1,4 +1,10 @@
-import { createContext, type ReactNode, useContext } from 'react';
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import type { Client } from 'near-api-ts';
 
 type NearContext = {
@@ -10,19 +16,42 @@ type NearProviderProps = {
   children: ReactNode;
 };
 
-const NearContext = createContext<NearContext | undefined>(undefined);
+const NearContext = createContext<any>(undefined);
 
-export const NearProvider = ({ client, children }: NearProviderProps) => (
-  <NearContext.Provider value={{ client }}>{children}</NearContext.Provider>
-);
+export const NearProvider = ({ createContext, children }: any) => {
+  const [state, setState] = useState<any>({
+    context: undefined,
+    error: undefined,
+    ok: false,
+  });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const nearContext = await createContext();
+        setState({
+          context: nearContext,
+          error: undefined,
+          ok: true,
+        });
+      } catch (e) {
+        setState({
+          context: undefined,
+          error: e,
+          ok: false,
+        });
+      }
+    })();
+  }, [createContext]);
+
+  return <NearContext.Provider value={state}>{children}</NearContext.Provider>;
+};
 
 export const useNearContext = () => {
   const nearContext = useContext(NearContext);
 
   if (!nearContext)
-    throw new Error(
-      'useNearContext must be used within NearProvider.',
-    );
+    throw new Error('useNearContext must be used within NearProvider.');
 
   return nearContext;
 };

@@ -1,8 +1,10 @@
 import { useAccountInfo } from '../../lib/useAccountInfo.ts';
 
 export const AccountCard = () => {
-  const { data, isPending, isError } =
-    useAccountInfo({ accountId: 'near' });
+  const { data, isPending, isError } = useAccountInfo({
+    accountId: 'near',
+    networkId: 'testnet',
+  });
 
   if (isPending) return null;
 
