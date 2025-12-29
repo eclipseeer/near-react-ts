@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NearConnector } from '@hot-labs/near-connect';
 import { AccountCard } from './AccountCard/AccountCard.tsx';
 import x from './manifest.json';
+import styles from './App.module.css';
+import { SelectNetwork } from './SelectNetwork/SelectNetwork.tsx';
 
 const logger = {
   log: (...logs: any[]) => console.log(...logs),
-}
+};
 
 const connector = new NearConnector({
   network: 'testnet',
@@ -28,12 +30,18 @@ export const App = () => {
   };
 
   return (
-    <>
-      <h1>Test HOT</h1>
+    <div className={styles.container}>
+      <div className={styles.topbar}>
+        <h2>near-react-ts</h2>
+        <div className={styles.leftSide}>
+          <button onClick={connect}>Connect</button>
+          <SelectNetwork />
+        </div>
+      </div>
+
       <div className="card">
-        <button onClick={connect}>Connect</button>
         <AccountCard />
       </div>
-    </>
+    </div>
   );
 };

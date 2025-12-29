@@ -41,10 +41,9 @@ type UseAccountInfoOutput =
 
 type UseAccountInfoArgs = {
   accountId: string;
-  networkId: string;
 };
 
-export const useAccountInfo = ({ accountId, networkId }: UseAccountInfoArgs) => {
+export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
   const [state, setState] = useState<UseAccountInfoOutput>({
     data: null,
     error: null,
@@ -55,12 +54,18 @@ export const useAccountInfo = ({ accountId, networkId }: UseAccountInfoArgs) => 
   });
 
   const nearContext = useNearContext();
+  // TODO this wont works and update
+  const selectedNetworkId = nearContext.context?.selectedNetworkId;
 
   useEffect(() => {
     if (!nearContext.ok) return;
 
     // TODO handle errors
-    const client = nearContext.context.networks[networkId].client;
+    const { networks } = nearContext.context;
+    // Looks like it's not possible to do not find a network
+    const { client } = networks.find(
+      (network: any) => network.networkId === selectedNetworkId,
+    );
 
     setState((prev) => ({ ...prev, isFetching: true }) as UseAccountInfoOutput);
     const controller = new AbortController();
@@ -107,7 +112,7 @@ export const useAccountInfo = ({ accountId, networkId }: UseAccountInfoArgs) => 
       console.log('Unmount');
       controller.abort(); // Cancel request when unmount
     };
-  }, [accountId, nearContext]);
+  }, [accountId, selectedNetworkId]);
 
   return state;
 };

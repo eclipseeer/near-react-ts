@@ -7,18 +7,19 @@ import {
 } from 'react';
 import type { Client } from 'near-api-ts';
 
-type NearContext = {
-  client: Client;
-};
-
-type NearProviderProps = {
-  client: Client;
-  children: ReactNode;
-};
+// type NearContext = {
+//   client: Client;
+// };
+//
+// type NearProviderProps = {
+//   client: Client;
+//   children: ReactNode;
+// };
 
 const NearContext = createContext<any>(undefined);
 
 export const NearProvider = ({ createContext, children }: any) => {
+  // TODO use Result wrapper for all hooks
   const [state, setState] = useState<any>({
     context: undefined,
     error: undefined,
@@ -29,8 +30,10 @@ export const NearProvider = ({ createContext, children }: any) => {
     (async () => {
       try {
         const nearContext = await createContext();
+
         setState({
           context: nearContext,
+          setState, // TODO use state + subscriptions: rerender only what we need
           error: undefined,
           ok: true,
         });

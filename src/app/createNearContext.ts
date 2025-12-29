@@ -5,15 +5,11 @@ export const createNearContext = async () => {
   const testnetClient = await createTestnetClient();
 
   return {
-    networks: {
-      mainnet: {
-        client: mainnetClient,
-        signers: {},
-      },
-      testnet: {
-        client: testnetClient,
-        signers: {},
-      },
-    },
+    appName: 'my-test-app',
+    selectedNetworkId: 'testnet',
+    networks: [
+      { networkId: 'mainnet', client: mainnetClient, signers: {} },
+      { networkId: 'testnet', client: testnetClient, signers: {} },
+    ],
   };
 };

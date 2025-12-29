@@ -1,9 +1,8 @@
 import { useAccountInfo } from '../../lib/useAccountInfo.ts';
 
 export const AccountCard = () => {
-  const { data, isPending, isError } = useAccountInfo({
+  const { data, isPending, isFetching, isError } = useAccountInfo({
     accountId: 'near',
-    networkId: 'testnet',
   });
 
   if (isPending) return null;
@@ -21,7 +20,12 @@ export const AccountCard = () => {
     >
       <h3>Account Card</h3>
       <p>AccountId: {(data as any).accountId}</p>
-      <p>Near Balance: {(data as any).accountInfo.balance.total.near}</p>
+      <p>
+        Near Balance:{' '}
+        {isFetching
+          ? 'Loading...'
+          : (data as any).accountInfo.balance.total.near}
+      </p>
     </div>
   );
 };
