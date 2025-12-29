@@ -1,9 +1,10 @@
 import { useSelectedNetwork } from '../../lib/useSelectedNetwork.ts';
 
 export const SelectNetwork = () => {
-  const { data, ok } = useSelectedNetwork();
+  const { selectedNetworkId, networkIds, selectNetwork, ok } =
+    useSelectedNetwork();
+
   if (!ok) return null;
-  const { selectedNetworkId, networkIds, selectNetwork } = data;
 
   return (
     <div>

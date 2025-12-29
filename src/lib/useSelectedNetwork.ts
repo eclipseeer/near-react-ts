@@ -3,11 +3,9 @@ import { useEffect, useState } from 'react';
 
 export const useSelectedNetwork = () => {
   const [state, setState] = useState<any>({
-    data: {
-      selectedNetworkId: undefined,
-      networkIds: undefined,
-      selectNetwork: undefined,
-    },
+    selectedNetworkId: undefined,
+    networkIds: undefined,
+    selectNetwork: undefined,
     ok: false,
   });
   const nearContext = useNearContext();
@@ -26,11 +24,9 @@ export const useSelectedNetwork = () => {
       }));
 
     setState({
-      data: {
-        selectedNetworkId,
-        networkIds,
-        selectNetwork,
-      },
+      selectedNetworkId,
+      networkIds,
+      selectNetwork,
       ok: true,
     });
   }, [nearContext]);
