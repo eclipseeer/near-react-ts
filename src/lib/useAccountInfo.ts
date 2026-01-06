@@ -1,4 +1,4 @@
-import { useNearContext } from './NearProvider.tsx';
+import { useNearContext } from './NearProvider/NearProvider.tsx';
 import { useEffect, useState } from 'react';
 import type { Client } from 'near-api-ts';
 
@@ -54,18 +54,15 @@ export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
   });
 
   const nearContext = useNearContext();
-  // TODO this wont works and update
-  const selectedNetworkId = nearContext.context?.selectedNetworkId;
+
+  // TODO will it works fine?
+  const selectedNetworkId =
+    nearContext.data?.nearState?.selectedNetwork?.networkId;
 
   useEffect(() => {
     if (!nearContext.ok) return;
 
-    // TODO handle errors
-    const { networks } = nearContext.context;
-    // Looks like it's not possible to do not find a network
-    const { client } = networks.find(
-      (network: any) => network.networkId === selectedNetworkId,
-    );
+    const { client } = nearContext.data.nearState.selectedNetwork;
 
     setState((prev) => ({ ...prev, isFetching: true }) as UseAccountInfoOutput);
     const controller = new AbortController();

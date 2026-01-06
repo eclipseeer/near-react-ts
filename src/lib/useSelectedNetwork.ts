@@ -1,4 +1,4 @@
-import { useNearContext } from './NearProvider.tsx';
+import { useNearContext } from './NearProvider/NearProvider.tsx';
 import { useEffect, useState } from 'react';
 
 export const useSelectedNetwork = () => {
@@ -14,17 +14,27 @@ export const useSelectedNetwork = () => {
     if (!nearContext.ok) return;
 
     // TODO use memo??
-    const { selectedNetworkId, networks } = nearContext.context;
+    //  const { client } = nearContext.data.nearState.selectedNetwork;
+
+    const { networks, selectedNetwork } = nearContext.data.nearState;
     const networkIds = networks.map((network: any) => network.networkId);
 
     const selectNetwork = (networkId: string) =>
-      nearContext.setState((prev: any) => ({
+      nearContext.data.setStore((prev: any) => ({
         ...prev,
-        context: { ...prev.context, selectedNetworkId: networkId },
+        data: {
+          ...prev.data,
+          nearState: {
+            ...prev.data.nearState,
+            selectedNetwork: networks.find(
+              (n: any) => n.networkId === networkId,
+            ),
+          },
+        },
       }));
 
     setState({
-      selectedNetworkId,
+      selectedNetworkId: selectedNetwork.networkId,
       networkIds,
       selectNetwork,
       ok: true,

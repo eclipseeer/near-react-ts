@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { NearConnector } from '@hot-labs/near-connect';
-import { AccountCard } from './AccountCard/AccountCard.tsx';
+import { AccountCard } from './Main/AccountCard/AccountCard.tsx';
 import x from './manifest.json';
 import styles from './App.module.css';
-import { SelectNetwork } from './SelectNetwork/SelectNetwork.tsx';
+import { SelectNetwork } from './Topbar/SelectNetwork/SelectNetwork.tsx';
+import { useSelectedAccount } from '../lib/useSelectedAccount.ts';
+import { SelectedAccount } from './Topbar/SelectedAccount/SelectedAccount.tsx';
+import { Button, Tabs } from '@mantine/core';
+import { Main } from './Main/Main.tsx';
+import { Topbar } from './Topbar/Topbar.tsx';
 
 const logger = {
   log: (...logs: any[]) => console.log(...logs),
@@ -16,32 +21,27 @@ const connector = new NearConnector({
 });
 console.log(connector);
 
+connector.on('wallet:signIn', async (data) => {
+  console.log('wallet:signIn', data);
+});
+
 // const wallet = await connector.wallet();
 // console.log(wallet);
 
 // const accs = await wallet.getAccounts();
 // console.log(accs);
 
-export const App = () => {
-  const [count, _setCount] = useState(0);
-
-  const connect = async () => {
+/*
+const connect = async () => {
     await connector.connect();
   };
+ */
 
+export const App = () => {
   return (
-    <div className={styles.container}>
-      <div className={styles.topbar}>
-        <h2>near-react-ts</h2>
-        <div className={styles.leftSide}>
-          <button onClick={connect}>Connect</button>
-          <SelectNetwork />
-        </div>
-      </div>
-
-      <div className="card">
-        <AccountCard />
-      </div>
+    <div className={styles.app}>
+      <Topbar />
+      <Main />
     </div>
   );
 };
