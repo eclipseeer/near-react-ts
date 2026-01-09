@@ -1,6 +1,6 @@
-import { useNearContext } from './NearProvider/NearProvider.tsx';
 import { useEffect, useState } from 'react';
 import type { Client } from 'near-api-ts';
+import { useStoreEntity, useStoreState } from '../react-store-ts';
 
 type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
@@ -44,6 +44,11 @@ type UseAccountInfoArgs = {
 };
 
 export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
+  const selectedNetworkId = useStoreState((s: any) => s.selectedNetworkId);
+  const client = useStoreEntity(
+    (store: any) => store.networks.map[selectedNetworkId].client,
+  );
+
   const [state, setState] = useState<UseAccountInfoOutput>({
     data: null,
     error: null,
@@ -53,16 +58,16 @@ export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
     isError: false,
   });
 
-  const nearContext = useNearContext();
-
-  // TODO will it works fine?
-  const selectedNetworkId =
-    nearContext.data?.nearState?.selectedNetwork?.networkId;
-
   useEffect(() => {
-    if (!nearContext.ok) return;
-
-    const { client } = nearContext.data.nearState.selectedNetwork;
+    if (!accountId)
+      return setState({
+        data: null,
+        error: 'Invalid account id',
+        isPending: false,
+        isFetching: false,
+        isSuccess: false,
+        isError: true,
+      });
 
     setState((prev) => ({ ...prev, isFetching: true }) as UseAccountInfoOutput);
     const controller = new AbortController();

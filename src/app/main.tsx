@@ -1,16 +1,31 @@
-import { StrictMode } from 'react';
+// import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
-import { NearProvider } from '../lib/NearProvider/NearProvider.tsx';
-import { createNearContext } from './createNearContext.ts';
+import { NearStoreProvider } from '../lib/NearStoreProvider.tsx';
 import { MantineProvider } from '@mantine/core';
+import { createNearStore } from '../lib/createNearStore.ts';
+import { createMainnetClient, createTestnetClient } from '../lib';
 import '@mantine/core/styles.css';
 
-// TODO enable <StrictMode> for testing
+const nearStore = await createNearStore({
+  appName: 'my-test-app',
+  selectedNetworkId: 'testnet',
+  networks: [
+    {
+      networkId: 'mainnet',
+      client: createMainnetClient(),
+    },
+    {
+      networkId: 'testnet',
+      client: createTestnetClient(),
+    },
+  ],
+});
+
 createRoot(document.getElementById('root')!).render(
-  <NearProvider createContext={createNearContext}>
+  <NearStoreProvider nearStore={nearStore}>
     <MantineProvider>
       <App />
     </MantineProvider>
-  </NearProvider>,
+  </NearStoreProvider>,
 );

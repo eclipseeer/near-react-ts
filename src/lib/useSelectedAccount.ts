@@ -1,47 +1,11 @@
-import { useNearContext } from './NearProvider/NearProvider.tsx';
-import { useEffect, useState } from 'react';
+import { useStoreAction, useStoreState } from '../react-store-ts';
 
 export const useSelectedAccount = () => {
-  const [state, setState] = useState<any>({
-    selectedAccountId: undefined,
-    accountIds: undefined,
-    // selectNetwork: undefined,
-    ok: false,
-  });
-  const nearContext = useNearContext();
+  const selectedAccountId = useStoreState(
+    (store: any) => store.selectedAccountId,
+  );
+  const accountIds = useStoreState((store: any) => store.accounts.list);
+  const selectAccount = useStoreAction((store: any) => store.selectAccount);
 
-  useEffect(() => {
-    if (!nearContext.ok) return;
-
-    // TODO use memo??
-    const { selectedAccount, accounts } =
-      nearContext.data.nearState.selectedNetwork;
-
-    const accountIds = accounts
-      ? accounts.map((account: any) => account.accountId)
-      : [];
-
-    // const selectNetwork = (networkId: string) =>
-    //   nearContext.data.setStore((prev: any) => ({
-    //     ...prev,
-    //     data: {
-    //       ...prev.data,
-    //       nearState: {
-    //         ...prev.data.nearState,
-    //         selectedNetwork: networks.find(
-    //           (n: any) => n.networkId === networkId,
-    //         ),
-    //       },
-    //     },
-    //   }));
-
-    setState({
-      selectedAccountId: selectedAccount?.accountId,
-      accountIds,
-      // selectNetwork,
-      ok: true,
-    });
-  }, [nearContext]);
-
-  return state;
+  return { selectedAccountId, accountIds, selectAccount };
 };

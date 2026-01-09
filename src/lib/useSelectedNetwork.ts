@@ -1,45 +1,11 @@
-import { useNearContext } from './NearProvider/NearProvider.tsx';
-import { useEffect, useState } from 'react';
+import { useStoreState, useStoreAction } from '../react-store-ts';
 
 export const useSelectedNetwork = () => {
-  const [state, setState] = useState<any>({
-    selectedNetworkId: undefined,
-    networkIds: undefined,
-    selectNetwork: undefined,
-    ok: false,
-  });
-  const nearContext = useNearContext();
+  const selectedNetworkId = useStoreState(
+    (store: any) => store.selectedNetworkId,
+  );
+  const networkIds = useStoreState((store: any) => store.networks.list);
+  const selectNetwork = useStoreAction((store: any) => store.selectNetwork);
 
-  useEffect(() => {
-    if (!nearContext.ok) return;
-
-    // TODO use memo??
-    //  const { client } = nearContext.data.nearState.selectedNetwork;
-
-    const { networks, selectedNetwork } = nearContext.data.nearState;
-    const networkIds = networks.map((network: any) => network.networkId);
-
-    const selectNetwork = (networkId: string) =>
-      nearContext.data.setStore((prev: any) => ({
-        ...prev,
-        data: {
-          ...prev.data,
-          nearState: {
-            ...prev.data.nearState,
-            selectedNetwork: networks.find(
-              (n: any) => n.networkId === networkId,
-            ),
-          },
-        },
-      }));
-
-    setState({
-      selectedNetworkId: selectedNetwork.networkId,
-      networkIds,
-      selectNetwork,
-      ok: true,
-    });
-  }, [nearContext]);
-
-  return state;
+  return { selectedNetworkId, networkIds, selectNetwork };
 };

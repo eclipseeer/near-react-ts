@@ -2,15 +2,13 @@ import { useSelectedAccount } from '../../../lib/useSelectedAccount.ts';
 import { Select } from '@mantine/core';
 
 export const SelectedAccount = () => {
-  const { selectedAccountId, accountIds, ok } = useSelectedAccount();
-
-  if (!ok) return null;
+  const { selectedAccountId, accountIds, selectAccount } = useSelectedAccount();
 
   return (
     <div>
       <Select
         value={selectedAccountId}
-        onChange={() => {}}
+        onChange={(value) => selectAccount({ accountId: value })}
         data={accountIds}
         checkIconPosition="right"
       />

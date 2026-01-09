@@ -7,7 +7,8 @@ const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
   const isActive = activeTab === value;
   return (
     <Button
-      variant={isActive ? 'filled' : 'subtle'}
+      color="blue"
+      variant={isActive ? 'outline' : 'subtle'}
       fullWidth
       radius={8}
       onClick={() => setActiveTab(value)}
