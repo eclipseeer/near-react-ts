@@ -1,4 +1,4 @@
-import { useSelectedNetwork } from '../../../lib/useSelectedNetwork.ts';
+import { useSelectedNetwork } from '../../../lib/hooks/useSelectedNetwork.ts';
 import { Select } from '@mantine/core';
 
 export const SelectNetwork = () => {

@@ -2,6 +2,7 @@ import { Button } from '@mantine/core';
 import cn from './Main.module.css';
 import { useState } from 'react';
 import { AccountCard } from './AccountCard/AccountCard.tsx';
+import { SendNearTokens } from './SendNearTokens/SendNearTokens.tsx';
 
 const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
   const isActive = activeTab === value;
@@ -19,7 +20,7 @@ const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
 };
 
 export const Main = () => {
-  const [activeTab, setActiveTab] = useState('selected-account');
+  const [activeTab, setActiveTab] = useState('send-near-tokens');
 
   return (
     <div className={cn.main}>
@@ -31,17 +32,15 @@ export const Main = () => {
           activeTab={activeTab}
         />
         <NavButton
-          title="Add Account"
-          value="add-account"
+          title="Send Near Tokens"
+          value="send-near-tokens"
           setActiveTab={setActiveTab}
           activeTab={activeTab}
         />
       </div>
       <div className={cn.content}>
         {activeTab === 'selected-account' && <AccountCard />}
-        {activeTab === 'add-account' && (
-          <div className={cn.content}>Add Account</div>
-        )}
+        {activeTab === 'send-near-tokens' && <SendNearTokens />}
       </div>
     </div>
   );

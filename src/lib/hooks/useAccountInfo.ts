@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Client } from 'near-api-ts';
-import { useStoreEntity, useStoreState } from '../react-store-ts';
+import { useStoreEntity, useStoreState } from '../../react-store-ts';
 
 type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 
@@ -44,10 +44,10 @@ type UseAccountInfoArgs = {
 };
 
 export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
-  const selectedNetworkId = useStoreState((s: any) => s.selectedNetworkId);
-  const client = useStoreEntity(
-    (store: any) => store.networks.map[selectedNetworkId].client,
+  const selectedNetworkId = useStoreState(
+    (s: any) => s.selectedNetwork.networkId,
   );
+  const client = useStoreState((store: any) => store.selectedNetwork.client);
 
   const [state, setState] = useState<UseAccountInfoOutput>({
     data: null,

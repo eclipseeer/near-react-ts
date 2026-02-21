@@ -1,4 +1,4 @@
-import { useSelectedAccount } from '../../../lib/useSelectedAccount.ts';
+import { useSelectedAccount } from '../../../lib/hooks/useSelectedAccount.ts';
 import { Select } from '@mantine/core';
 
 export const SelectedAccount = () => {

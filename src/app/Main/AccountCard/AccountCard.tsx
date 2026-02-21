@@ -1,15 +1,13 @@
 import { Title, Text, Skeleton } from '@mantine/core';
-import { useAccountInfo } from '../../../lib/useAccountInfo.ts';
+import { useAccountInfo } from '../../../lib/hooks/useAccountInfo.ts';
 import cn from './AccountCard.module.css';
-import { useSelectedAccount } from '../../../lib/useSelectedAccount.ts';
+import { useSelectedAccount } from '../../../lib/hooks/useSelectedAccount.ts';
 
 export const AccountCard = () => {
   const { selectedAccountId } = useSelectedAccount();
   const { data, isPending, isFetching, isError } = useAccountInfo({
     accountId: selectedAccountId,
   });
-
-  console.log(selectedAccountId);
 
   if (isPending) return <Text>loading...</Text>;
   if (isError) return <Text>Selected account not found...</Text>;
