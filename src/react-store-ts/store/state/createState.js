@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import {get} from 'lodash-es';
 
 const devTools = window?.__REDUX_DEVTOOLS_EXTENSION__?.connect();
 
@@ -20,7 +20,8 @@ export const createState = ({ initState }) => {
   const setState = ({ nextState, payload, path, key }) => {
     state = nextState;
     subscribers.forEach((callback) => callback(nextState));
-    if (devTools) devTools.send({ type: [...path, key].join('.'), payload }, nextState);
+    if (devTools)
+      devTools.send({ type: [...path, key].join('.'), payload }, nextState);
   };
 
   const subscribe = (callback) => {

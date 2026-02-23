@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@hot-labs/near-connect':
-        specifier: ^0.8.1
-        version: 0.8.1
+        specifier: ^0.10.0
+        version: 0.10.0
       '@mantine/core':
         specifier: ^8.3.11
         version: 8.3.11(@mantine/hooks@8.3.11(react@19.2.3))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -27,8 +27,8 @@ importers:
         specifier: ^4.17.22
         version: 4.17.22
       near-api-ts:
-        specifier: ^0.5.1
-        version: 0.5.1
+        specifier: file:../near-ts/packages/near-api-ts
+        version: file:../near-ts/packages/near-api-ts
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -303,8 +303,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@hot-labs/near-connect@0.8.1':
-    resolution: {integrity: sha512-cJRZFQTrY4Nwnmv/zM10HfzcywM4NX6pZOR9Vkdx/nuoHWc7VA/hpN0RR9j/5EYhXdF09k16qkY/vc1Zk2YuMg==}
+  '@hot-labs/near-connect@0.10.0':
+    resolution: {integrity: sha512-J05rYGrkUtz/eeAwmAGi5b+DzpNGbhA5jEuP9yAtZ4QLSYDZj+w/fmKjTSmv4/A/U9hGDaa5a5MUVlwzifafhg==}
 
   '@mantine/core@8.3.11':
     resolution: {integrity: sha512-FWXp94tiTFdh8BKc7UTNdIuumD96JFxLF/VvUWGRzf5i563Ye0Ma/aZtOBwpdEtdIQkojOhoMMV76k5toOQgEQ==}
@@ -318,8 +318,8 @@ packages:
     peerDependencies:
       react: ^18.x || ^19.x
 
-  '@near-js/jsonrpc-types@1.5.0':
-    resolution: {integrity: sha512-pgidkMApxPWp/tSgHUpVsn9n9fF1RZmk/A/yM/TEuzuczqMhnnT9I5ow4qmYPQyVMMWFialELT2SGm/LKym8bA==}
+  '@near-js/jsonrpc-types@1.6.0':
+    resolution: {integrity: sha512-pizXumpcMR4c2V6dCn9+/xiaq+U302dwFjZZBRzB7oVYGi3Kix4AmZu/Zt06EDfMX07k8vG0OiFJeSoW+oiFEg==}
 
   '@noble/curves@1.9.7':
     resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
@@ -594,6 +594,9 @@ packages:
   lodash-es@4.17.22:
     resolution: {integrity: sha512-XEawp1t0gxSi9x01glktRZ5HDy0HXqrM0x5pXQM98EaI0NxO6jVM7omDOxsuEo5UIASAnm2bRp1Jt/e0a2XU8Q==}
 
+  lodash-es@4.17.23:
+    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
+
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
@@ -602,8 +605,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  near-api-ts@0.5.1:
-    resolution: {integrity: sha512-SWRBXzWqU/rdp/OCLdFD5/jPI32067EczOPbfl9VuNlYmPHbT+BSKAAhBTCULNpNrfV8z3zNXTSw1fvLe9eHow==}
+  near-api-ts@file:../near-ts/packages/near-api-ts:
+    resolution: {directory: ../near-ts/packages/near-api-ts, type: directory}
+    engines: {node: '>=24'}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -830,8 +834,8 @@ packages:
       yaml:
         optional: true
 
-  zod@4.2.1:
-    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
 
@@ -975,7 +979,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@hot-labs/near-connect@0.8.1': {}
+  '@hot-labs/near-connect@0.10.0': {}
 
   '@mantine/core@8.3.11(@mantine/hooks@8.3.11(react@19.2.3))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
@@ -995,9 +999,9 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  '@near-js/jsonrpc-types@1.5.0':
+  '@near-js/jsonrpc-types@1.6.0':
     dependencies:
-      zod: 4.2.1
+      zod: 4.3.6
 
   '@noble/curves@1.9.7':
     dependencies:
@@ -1209,19 +1213,21 @@ snapshots:
 
   lodash-es@4.17.22: {}
 
+  lodash-es@4.17.23: {}
+
   lodash@4.17.21: {}
 
   nanoid@3.3.11: {}
 
-  near-api-ts@0.5.1:
+  near-api-ts@file:../near-ts/packages/near-api-ts:
     dependencies:
-      '@near-js/jsonrpc-types': 1.5.0
+      '@near-js/jsonrpc-types': 1.6.0
       '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       borsh: 2.0.0
-      lodash-es: 4.17.22
-      zod: 4.2.1
+      lodash-es: 4.17.23
+      zod: 4.3.6
 
   picocolors@1.1.1: {}
 
@@ -1414,4 +1420,4 @@ snapshots:
       fsevents: 2.3.3
       sugarss: 5.0.1(postcss@8.5.6)
 
-  zod@4.2.1: {}
+  zod@4.3.6: {}
