@@ -1,43 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Client } from '../near-ts/packages/near-api-ts/browser';
+import type { Client } from 'near-api-ts';
 import { useStoreEntity, useStoreState } from '../../../react-store-ts';
-
-type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
-
-type ExtractOk<R> = R extends Result<infer T, any> ? T : never;
-type ExtractErr<R> = R extends Result<any, infer E> ? E : never;
-
-type MyResult = Awaited<ReturnType<Client['safeGetAccountInfo']>>;
-
-// TODO remove it after export types from NAT
-type GetAccountInfoOutput = ExtractOk<MyResult>; // GetAccountInfoOutput
-type GetAccountInfoError = ExtractErr<MyResult>; // GetAccountInfoError
-
-type UseAccountInfoOutput =
-  | {
-      data: GetAccountInfoOutput;
-      error: null;
-      isPending: false;
-      isFetching: false;
-      isSuccess: true;
-      isError: false;
-    }
-  | {
-      data: null;
-      error: GetAccountInfoError;
-      isPending: false;
-      isFetching: false;
-      isSuccess: false;
-      isError: true;
-    }
-  | {
-      data: null;
-      error: null;
-      isPending: boolean;
-      isFetching: boolean;
-      isSuccess: boolean;
-      isError: boolean;
-    };
 
 type UseAccountInfoArgs = {
   accountId: string;
@@ -47,9 +10,9 @@ export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
   const selectedNetworkId = useStoreState(
     (s: any) => s.selectedNetwork.networkId,
   );
-  const client = useStoreState((store: any) => store.selectedNetwork.client);
+  const client: Client = useStoreState((store: any) => store.selectedNetwork.client);
 
-  const [state, setState] = useState<UseAccountInfoOutput>({
+  const [state, setState] = useState<any>({
     data: null,
     error: null,
     isPending: true,
@@ -69,7 +32,7 @@ export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
         isError: true,
       });
 
-    setState((prev) => ({ ...prev, isFetching: true }) as UseAccountInfoOutput);
+    setState((prev: any) => ({ ...prev, isFetching: true }));
     const controller = new AbortController();
 
     const fetchData = async () => {
@@ -90,12 +53,12 @@ export const useAccountInfo = ({ accountId }: UseAccountInfoArgs) => {
       }
       console.log(response.error);
       // When unmount -  don't do anything
-      if (
-        response.error.kind === 'Client.GetAccountInfo.SendRequest.Failed' &&
-        response.error.context.cause.kind ===
-          'Client.Transport.SendRequest.Request.Aborted'
-      )
-        return;
+      // if (
+      //   response.error.kind === 'Client.GetAccountInfo.SendRequest.Failed' &&
+      //   response.error.context.cause.kind ===
+      //     'Client.Transport.SendRequest.Request.Aborted'
+      // )
+      //   return;
 
       // When error
       setState({

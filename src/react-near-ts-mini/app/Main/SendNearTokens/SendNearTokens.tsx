@@ -4,6 +4,8 @@ import cn from './SendNearTokens.module.css';
 import { transfer } from 'near-api-ts';
 
 export const SendNearTokens = () => {
+  console.log('Render SendNearTokens');
+
   const { executeTransaction, data, error, isLoading, isError, isSuccess } =
     useExecuteTransaction();
 

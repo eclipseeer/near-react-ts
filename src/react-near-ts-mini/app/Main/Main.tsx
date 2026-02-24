@@ -20,7 +20,7 @@ const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
 };
 
 export const Main = () => {
-  const [activeTab, setActiveTab] = useState('send-near-tokens');
+  const [activeTab, setActiveTab] = useState('send-near');
 
   return (
     <div className={cn.main}>
@@ -32,15 +32,15 @@ export const Main = () => {
           activeTab={activeTab}
         />
         <NavButton
-          title="Send Near Tokens"
-          value="send-near-tokens"
+          title="Send Near"
+          value="send-near"
           setActiveTab={setActiveTab}
           activeTab={activeTab}
         />
       </div>
       <div className={cn.content}>
         {activeTab === 'connected-account' && <ConnectedAccount />}
-        {activeTab === 'send-near-tokens' && <SendNearTokens />}
+        {activeTab === 'send-near' && <SendNearTokens />}
       </div>
     </div>
   );

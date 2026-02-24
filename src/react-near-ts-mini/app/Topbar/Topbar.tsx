@@ -9,7 +9,7 @@ export const Topbar = () => {
 
   return (
     <div className={cn.topbar}>
-      <Title order={3}>Near React TS</Title>
+      <Title order={3}>React Near TS - Mini</Title>
       <div className={cn.leftSide}>
         {isConnectedAccount ? (
           <>

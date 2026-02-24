@@ -6,7 +6,6 @@ import { useStoreState } from '../../../react-store-ts';
 const executeTransaction = async ({ intent, signers, setState }: any) => {
   const execute = async (index: any) => {
     const signer = signers[index]; // TODO fix and rework
-    console.log(signers);
     console.log('executeTransaction signer', signer);
     if (!signer)
       return setState({

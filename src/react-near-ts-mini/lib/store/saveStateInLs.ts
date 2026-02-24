@@ -1,4 +1,4 @@
-export const setStateToLs = (
+export const saveStateInLs = (
   state: any,
   appName: string,
   networkId: string,

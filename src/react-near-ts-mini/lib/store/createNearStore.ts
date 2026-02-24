@@ -2,13 +2,13 @@ import type { NearConnector } from '@hot-labs/near-connect';
 import type { Client } from 'near-api-ts';
 import { action, createStore, effect } from '../../../react-store-ts';
 import { loadStateFromLs } from './loadStateFromLs.ts';
-import { setStateToLs } from './setStateToLs.ts';
+import { saveStateInLs } from './saveStateInLs.ts';
 
 export const createNearStore = (config: any) => {
   const { appName, networkId, createClient } = config;
 
   const lsState = loadStateFromLs(appName, networkId);
-  console.log('lsState', lsState);
+
   const connectedAccountId = lsState.connectedAccountId;
   const nearConnectorService = config.services[0].createService();
   const signers: any = {};
@@ -20,7 +20,7 @@ export const createNearStore = (config: any) => {
       }),
     ];
   }
-  console.log(signers);
+
 
   const store = createStore({
     // state
@@ -57,7 +57,7 @@ export const createNearStore = (config: any) => {
         const accounts = await wallet.getAccounts({ network: networkId });
         const connectedAccountId = accounts[0].accountId;
 
-        setStateToLs(
+        saveStateInLs(
           {
             version: 1,
             connectedAccountId,
@@ -88,7 +88,7 @@ export const createNearStore = (config: any) => {
       try {
         await nearConnector.disconnect();
 
-        setStateToLs(
+        saveStateInLs(
           {
             version: 1,
             connectedAccountId: null,
