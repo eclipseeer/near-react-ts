@@ -1,5 +1,5 @@
 import { isNatError } from 'near-api-ts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useStoreState } from '../../../react-store-ts';
 import type { TransactionIntent } from '../../../../../near-ts/packages/near-api-ts/dist/node';
 
@@ -26,7 +26,7 @@ async function executeWithFallback({
     if (!signer) continue;
 
     const result = await signer.safeExecuteTransaction({ intent });
-
+    console.log('result', result);
     if (result.ok) return result.value;
 
     if (

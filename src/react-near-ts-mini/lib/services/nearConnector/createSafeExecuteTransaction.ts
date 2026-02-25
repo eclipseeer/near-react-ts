@@ -1,18 +1,28 @@
-import type { NearConnector, NearWalletBase } from '@hot-labs/near-connect';
-import { nearToken, transfer } from 'near-api-ts';
+import type { NearConnector } from '@hot-labs/near-connect';
+import { nearToken, nearGas } from 'near-api-ts';
+import type {
+  TransferAction as NatTransferAction,
+  FunctionCallAction as NatFunctionCallAction,
+} from 'near-api-ts';
 
-/*
-export interface TransferAction {
-  type: "Transfer";
-  params: { deposit: string };
-}
- */
-
-const toHotAction = (action: any) => {
+const toHotAction = (
+  action: NatTransferAction | NatFunctionCallAction,
+): any => {
   if (action.actionType === 'Transfer')
     return {
-      type: 'Transfer',
-      params: { deposit: nearToken(action.amount).yoctoNear.toString() },
+      transfer: { deposit: nearToken(action.amount).yoctoNear },
+    };
+
+  if (action.actionType === 'FunctionCall')
+    return {
+      functionCall: {
+        methodName: action.functionName,
+        args: action.functionArgs,
+        gas: nearGas(action.gasLimit).gas,
+        deposit: action.attachedDeposit
+          ? nearToken(action.attachedDeposit).yoctoNear
+          : 0n,
+      },
     };
 };
 

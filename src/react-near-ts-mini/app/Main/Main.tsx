@@ -21,7 +21,7 @@ const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
 };
 
 export const Main = () => {
-  const [activeTab, setActiveTab] = useState('send-near');
+  const [activeTab, setActiveTab] = useState('connected-account');
 
   return (
     <div className={cn.main}>

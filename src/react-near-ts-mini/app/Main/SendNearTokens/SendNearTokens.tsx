@@ -10,6 +10,7 @@ export const SendNearTokens = () => {
     executeTransaction.mutate({
       intent: {
         action: transfer({ amount: { yoctoNear: 1n } }),
+        // action: transfer({ amount: { near: '10000000000' } }),
         receiverAccountId: 'lantstool.testnet',
       },
     });

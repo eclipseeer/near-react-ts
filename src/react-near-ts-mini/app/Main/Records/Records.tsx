@@ -1,31 +1,24 @@
-import { Title, Text, Button } from '@mantine/core';
+import { Title, Text, Button, TextInput, Group } from '@mantine/core';
+import { useState } from 'react';
 import cn from './Records.module.css';
-import { functionCall } from 'near-api-ts';
 import { useContractReadFunction } from '../../../lib/hooks/useContractReadFunction.ts';
-import { useExecuteTransaction } from '../../../lib/hooks/useExecuteTransaction.ts';
+import { useAddRecord } from './useAddRecord.ts';
+import { useRemoveRecord } from './useRemoveRecord.ts';
+import { useConnectedAccount } from '../../../lib/hooks/useConnectedAccount.ts';
 
 export const Records = () => {
+  const [recordInput, setRecordInput] = useState('');
+  const { isConnectedAccount } = useConnectedAccount();
   const records = useContractReadFunction({
     contractAccountId: 'react-near-ts.lantstool.testnet',
     functionName: 'get_records',
   });
+  const { addRecord, addRecordMutation } = useAddRecord(setRecordInput);
+  const { removeRecord } = useRemoveRecord();
 
-  const addRecordMutation = useExecuteTransaction();
-
-  const addRecord = (record: string) => {
-    addRecordMutation.mutate({
-      intent: {
-        action: functionCall({
-          functionName: 'add_record',
-          functionArgs: { record },
-          gasLimit: { teraGas: '10' },
-        }),
-        receiverAccountId: 'react-near-ts.lantstool.testnet',
-      },
-      query: {
-        invalidateKeys: ['callContractReadFunction'],
-      },
-    });
+  const submitForm = (event: any) => {
+    event.preventDefault();
+    addRecord(recordInput);
   };
 
   if (records.isPending) return <Text>Loading...</Text>;
@@ -38,14 +31,44 @@ export const Records = () => {
       <Title order={3}>Records</Title>
       <div className={cn.info}>
         {(records.data.result as any).map((record: string, index: number) => (
-          <Text key={`${record}-${index}`}>
-            #{index + 1}: {record}
-          </Text>
+          <div key={`${record}-${index}`} className={cn.row}>
+            <Text>
+              #{index + 1}: {record}
+            </Text>
+            {isConnectedAccount && (
+              <Button
+                variant="light"
+                color="red"
+                onClick={() => removeRecord(index)}
+              >
+                Remove
+              </Button>
+            )}
+          </div>
         ))}
       </div>
-      <div className={cn.addRecord}>
-
-      </div>
+      {isConnectedAccount && (
+        <div className={cn.addRecord}>
+          <form onSubmit={submitForm}>
+            <Group align="flex-end" wrap="nowrap">
+              <TextInput
+                label="Add New Record"
+                placeholder="Enter record"
+                value={recordInput}
+                onChange={(event) => setRecordInput(event.currentTarget.value)}
+                style={{ flex: 1 }}
+              />
+              <Button
+                type="submit"
+                loading={addRecordMutation.isPending}
+                disabled={!recordInput.trim()}
+              >
+                Add Record
+              </Button>
+            </Group>
+          </form>
+        </div>
+      )}
     </>
   );
 };
