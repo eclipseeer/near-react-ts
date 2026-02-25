@@ -7,12 +7,14 @@ export const ConnectedAccount = () => {
   const { connectedAccountId } = useConnectedAccount();
   const accountInfo = useAccountInfo({ accountId: connectedAccountId });
 
-  console.log(accountInfo);
+  // console.log(accountInfo);
 
-  if (accountInfo.isPending) return <Text>Loading...</Text>;
+  if (accountInfo.isPending) return <Text>Waiting for connected account...</Text>;
+
   if (accountInfo.isError)
     return <Text>Error during loading the account info...</Text>;
 
+  const { balance, usedStorageBytes } = accountInfo.data.accountInfo;
 
   return (
     <>
@@ -24,17 +26,15 @@ export const ConnectedAccount = () => {
         </div>
         <div className={cn.row}>
           <Text>Total Balance</Text>
-          <Text>{accountInfo.data.accountInfo.balance.total.near} NEAR</Text>
+          <Text>{balance.total.near} NEAR</Text>
         </div>
         <div className={cn.row}>
           <Text>Available Balance</Text>
-          <Text>
-            {accountInfo.data.accountInfo.balance.available.near} NEAR
-          </Text>
+          <Text>{balance.available.near} NEAR</Text>
         </div>
         <div className={cn.row}>
           <Text>Storage Usage</Text>
-          <Text>{accountInfo.data.accountInfo.usedStorageBytes} bytes</Text>
+          <Text>{usedStorageBytes} bytes</Text>
         </div>
       </div>
     </>

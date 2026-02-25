@@ -1,80 +1,68 @@
-// selectedNetwork + selectedAccount + signer (automatically)
 import { isNatError } from 'near-api-ts';
-import { useCallback, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStoreState } from '../../../react-store-ts';
+import type { TransactionIntent } from '../../../../../near-ts/packages/near-api-ts/dist/node';
 
-const executeTransaction = async ({ intent, signers, setState }: any) => {
-  const execute = async (index: any) => {
-    const signer = signers[index]; // TODO fix and rework
-    console.log('executeTransaction signer', signer);
-    if (!signer)
-      return setState({
-        data: null,
-        error: 'No signers found',
-        isLoading: false,
-        isSuccess: false,
-        isError: true,
-      });
+type ExecuteTxArgs = {
+  intent: TransactionIntent;
+  query?: {
+    invalidateKeys?: string[];
+  };
+};
 
-    setState((prev: any) => ({ ...prev, isLoading: true }));
+async function executeWithFallback({
+  intent,
+  accountSigners,
+}: {
+  intent: TransactionIntent;
+  accountSigners: any[] | undefined;
+}) {
+  if (!accountSigners?.length) {
+    throw new Error('No signers found');
+  }
+
+  for (let i = 0; i < accountSigners.length; i++) {
+    const signer = accountSigners[i];
+    if (!signer) continue;
+
     const result = await signer.safeExecuteTransaction({ intent });
 
-    console.log('result', result);
-
-    if (result.ok)
-      return setState({
-        data: result.value,
-        error: null,
-        isLoading: false,
-        isSuccess: true,
-        isError: false,
-      });
+    if (result.ok) return result.value;
 
     if (
-      // TODO add .canExecuteTransaction method for signer and filter by it?
       isNatError(
         result.error,
         'MemorySigner.ExecuteTransaction.KeyPool.SigningKey.NotFound',
       )
     ) {
-      return await execute(index + 1);
+      continue;
     }
 
-    setState({
-      data: null,
-      error: result.error,
-      isLoading: false,
-      isSuccess: false,
-      isError: true,
-    });
-  };
+    throw result.error;
+  }
 
-  await execute(0);
-};
+  throw new Error('No usable signer found');
+}
 
-export const useExecuteTransaction = () => {
-  const signers = useStoreState((store: any) => store.signers);
-  const connectedAccountId = useStoreState(
-    (store: any) => store.connectedAccountId,
+export function useExecuteTransaction() {
+  const connectedAccountId = useStoreState((s: any) => s.connectedAccountId);
+  const accountSigners = useStoreState(
+    (s: any) => s.signers[connectedAccountId],
+    [connectedAccountId],
   );
 
-  const [state, setState] = useState<any>({
-    data: null,
-    error: null,
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
+  return useMutation({
+    mutationKey: ['executeTransaction', connectedAccountId],
+
+    mutationFn: ({ intent }: ExecuteTxArgs) =>
+      executeWithFallback({ intent, accountSigners }),
+
+    onSuccess: (_, variables, ___, context) => {
+      if (variables?.query?.invalidateKeys) {
+        void context.client.invalidateQueries({
+          queryKey: variables.query.invalidateKeys,
+        });
+      }
+    },
   });
-
-  const executeTransactionCallback = useCallback(
-    ({ intent }: any) =>
-      executeTransaction({
-        intent,
-        signers: signers[connectedAccountId],
-        setState,
-      }),
-    [signers, connectedAccountId],
-  );
-
-  return { ...state, executeTransaction: executeTransactionCallback };
-};
+}

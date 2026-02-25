@@ -4,17 +4,10 @@ import cn from './SendNearTokens.module.css';
 import { transfer } from 'near-api-ts';
 
 export const SendNearTokens = () => {
-  console.log('Render SendNearTokens');
-
-  const { executeTransaction, data, error, isLoading, isError, isSuccess } =
-    useExecuteTransaction();
-
-  if (isError) {
-    console.log(error);
-  }
+  const executeTransaction = useExecuteTransaction();
 
   const sendNear = () =>
-    executeTransaction({
+    executeTransaction.mutate({
       intent: {
         action: transfer({ amount: { yoctoNear: 1n } }),
         receiverAccountId: 'lantstool.testnet',
@@ -27,16 +20,18 @@ export const SendNearTokens = () => {
       <div className={cn.info}>
         <Button onClick={sendNear}>Send 1 Yocto Near</Button>
       </div>
-      {isLoading && <Text>Loading...</Text>}
-      {isSuccess && (
+      {executeTransaction.isSuccess && (
         <div>
           <Title order={5}>Success!</Title>
-          <Text>Transaction Hash: {data.rawRpcResult.transaction.hash}</Text>
+          <Text>
+            Transaction Hash:{' '}
+            {executeTransaction.data.rawRpcResult.transaction.hash}
+          </Text>
         </div>
       )}
-      {isError && (
+      {executeTransaction.isError && (
         <div>
-          <Title order={5}>Error!</Title>
+          <Text>Error: {executeTransaction.error.message}</Text>
         </div>
       )}
     </>

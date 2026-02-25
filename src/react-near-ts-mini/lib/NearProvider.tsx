@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createMainnetClient, createTestnetClient } from 'near-api-ts';
 import { StoreProvider } from '../../react-store-ts';
 import { createNearConnectorService } from './services/nearConnector/createNearConnectorService.ts';
-import { createNearStore } from './store/createNearStore.ts';
+import { createNearStore } from './custom-store/createNearStore.ts';
 
 const createMainnetNearStore = () =>
   createNearStore({
@@ -41,8 +41,5 @@ export const NearProvider = ({ networkId, children }: any) => {
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </StoreProvider>
-    // <StoreProvider store={nearStore}>
-    //   {children}
-    // </StoreProvider>
   );
 };

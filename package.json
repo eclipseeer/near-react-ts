@@ -20,7 +20,9 @@
     "lodash-es": "^4.17.22",
     "near-api-ts": "link:../near-ts/packages/near-api-ts",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",

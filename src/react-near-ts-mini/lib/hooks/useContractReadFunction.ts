@@ -1,56 +1,26 @@
-import { useCallback, useState } from 'react';
-import { type Client } from '../../../../../near-ts/packages/near-api-ts/universal';
+import { useQuery } from '@tanstack/react-query';
+import { type AccountId, type Client } from 'near-api-ts';
 import { useStoreState } from '../../../react-store-ts';
 
-const callContractReadFunction = async (
-  args: any,
-  client: Client,
-  setState: any,
-) => {
-  setState((prev: any) => ({ ...prev, isLoading: true }));
-  const result = await client.safeCallContractReadFunction(args);
-
-  console.log('result', result);
-
-  if (result.ok)
-    return setState({
-      data: result.value,
-      error: null,
-      isLoading: false,
-      isSuccess: true,
-      isError: false,
-    });
-
-  setState({
-    data: null,
-    error: result.error,
-    isLoading: false,
-    isSuccess: false,
-    isError: true,
-  });
+type UseContractReadFunctionArgs = {
+  contractAccountId: AccountId;
+  functionName: string;
 };
 
-export const useContractReadFunction = () => {
-  const client: Client = useStoreState((store: any) => store.client);
+export const useContractReadFunction = (args: UseContractReadFunctionArgs) => {
+  const client: Client = useStoreState((store: any) => store.client, []);
 
-  const [state, setState] = useState<any>({
-    data: null,
-    error: null,
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
-    callContractReadFunction: () => {},
+  return useQuery({
+    queryKey: [
+      'callContractReadFunction',
+      args.contractAccountId,
+      args.functionName,
+    ],
+    queryFn: (queryArgs) =>
+      client.callContractReadFunction({
+        contractAccountId: args.contractAccountId,
+        functionName: args.functionName,
+        options: { signal: queryArgs.signal },
+      }),
   });
-
-  const callContractReadFunctionCallback = useCallback(
-    (args: any) => callContractReadFunction(args, client, setState),
-    [client],
-  );
-
-  setState((prev: any) => ({
-    ...prev,
-    callContractReadFunction: callContractReadFunctionCallback,
-  }));
-
-  return state;
 };

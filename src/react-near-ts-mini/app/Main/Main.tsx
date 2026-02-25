@@ -3,6 +3,7 @@ import cn from './Main.module.css';
 import { useState } from 'react';
 import { ConnectedAccount } from './ConnectedAccount/ConnectedAccount.tsx';
 import { SendNearTokens } from './SendNearTokens/SendNearTokens.tsx';
+import { Records } from './Records/Records.tsx';
 
 const NavButton = ({ title, value, setActiveTab, activeTab }: any) => {
   const isActive = activeTab === value;
@@ -37,10 +38,17 @@ export const Main = () => {
           setActiveTab={setActiveTab}
           activeTab={activeTab}
         />
+        <NavButton
+          title="Records"
+          value="records"
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+        />
       </div>
       <div className={cn.content}>
         {activeTab === 'connected-account' && <ConnectedAccount />}
         {activeTab === 'send-near' && <SendNearTokens />}
+        {activeTab === 'records' && <Records />}
       </div>
     </div>
   );
