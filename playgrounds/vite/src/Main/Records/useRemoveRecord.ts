@@ -1,5 +1,4 @@
-import { useExecuteTransaction } from '../../../lib/hooks/useExecuteTransaction.ts';
-import { functionCall } from 'near-api-ts';
+import { useExecuteTransaction, functionCall } from 'react-near-ts';
 
 export const useRemoveRecord = () => {
   const removeRecordMutation = useExecuteTransaction();

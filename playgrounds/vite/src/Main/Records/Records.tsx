@@ -1,10 +1,9 @@
 import { Title, Text, Button, TextInput, Group } from '@mantine/core';
 import { useState } from 'react';
 import cn from './Records.module.css';
-import { useContractReadFunction } from '../../../lib/hooks/useContractReadFunction.ts';
+import { useContractReadFunction, useConnectedAccount } from 'react-near-ts';
 import { useAddRecord } from './useAddRecord.ts';
 import { useRemoveRecord } from './useRemoveRecord.ts';
-import { useConnectedAccount } from '../../../lib/hooks/useConnectedAccount.ts';
 
 export const Records = () => {
   const [recordInput, setRecordInput] = useState('');
@@ -58,10 +57,7 @@ export const Records = () => {
                 onChange={(event) => setRecordInput(event.currentTarget.value)}
                 style={{ flex: 1 }}
               />
-              <Button
-                type="submit"
-                disabled={!recordInput.trim()}
-              >
+              <Button type="submit" disabled={!recordInput.trim()}>
                 Add Record
               </Button>
             </Group>

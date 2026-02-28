@@ -1,7 +1,6 @@
 import { Title, Text, Button } from '@mantine/core';
-import { useExecuteTransaction } from '../../../lib/hooks/useExecuteTransaction.ts';
+import { useExecuteTransaction, transfer } from 'react-near-ts';
 import cn from './SendNearTokens.module.css';
-import { transfer } from 'near-api-ts';
 
 export const SendNearTokens = () => {
   const executeTransaction = useExecuteTransaction();

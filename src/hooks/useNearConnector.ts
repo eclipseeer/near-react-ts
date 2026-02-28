@@ -18,7 +18,6 @@ export const useNearConnector = () => {
   const setConnectedAccountId = useNearStore(
     (store) => store.setConnectedAccountId,
   );
-
   const context = getContext();
 
   const connect = async () => {
@@ -28,7 +27,7 @@ export const useNearConnector = () => {
 
     try {
       const wallet = await connector.connect();
-      const accounts = await wallet.getAccounts({ network: networkId as any });
+      const accounts = await wallet.getAccounts({ network: networkId as any }); // TODO validate networkId
       const connectedAccountId = accounts[0].accountId;
 
       setSigners(connectedAccountId);

@@ -1,6 +1,5 @@
 import { Button, Title } from '@mantine/core';
-import { useConnectedAccount } from '../../lib/hooks/useConnectedAccount.ts';
-import { useNearConnector } from '../../lib/hooks/useNearConnector.ts';
+import { useConnectedAccount, useNearConnector } from 'react-near-ts';
 import cn from './Topbar.module.css';
 
 export const Topbar = () => {

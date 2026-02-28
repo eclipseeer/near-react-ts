@@ -1,7 +1,6 @@
 import { Text, Title } from '@mantine/core';
-import { useAccountInfo } from '../../../lib/hooks/useAccountInfo.ts';
+import { useAccountInfo, useConnectedAccount } from 'react-near-ts';
 import cn from './ConnectedAccount.module.css';
-import { useConnectedAccount } from '../../../lib/hooks/useConnectedAccount.ts';
 
 export const ConnectedAccount = () => {
   const { connectedAccountId } = useConnectedAccount();

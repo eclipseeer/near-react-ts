@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import type { TransactionIntent } from '../../../../near-ts/packages/near-api-ts/node';
+import type { TransactionIntent } from 'near-api-ts';
 import { useNearStore } from '../store/NearStoreProvider.tsx';
 import type { Signer } from '../store/nearStore.ts';
 
@@ -57,7 +57,7 @@ export function useExecuteTransaction() {
       if (variables?.query?.invalidateKeys) {
         // We need to wait a bit for the transaction to be processed
         // cuz the wallets wait until ExecutedOptimistic instead of Final tx status
-        await new Promise((resolve) => setTimeout(resolve, 400));
+        await new Promise((resolve) => setTimeout(resolve, 500)); // TODO move to config
 
         void context.client.invalidateQueries({
           queryKey: variables.query.invalidateKeys,
