@@ -5,6 +5,10 @@ import { useNearStore } from '../store/NearStoreProvider.tsx';
 type UseContractReadFunctionArgs = {
   contractAccountId: AccountId;
   functionName: string;
+  functionArgs?: any; // TODO Fix type
+  query?: {
+    enabled?: boolean;
+  };
 };
 
 export const useContractReadFunction = (args: UseContractReadFunctionArgs) => {
@@ -12,6 +16,7 @@ export const useContractReadFunction = (args: UseContractReadFunctionArgs) => {
   const context = getContext();
 
   return useQuery({
+    enabled: args.query?.enabled ?? true,
     queryKey: [
       'callContractReadFunction',
       args.contractAccountId,
@@ -21,6 +26,7 @@ export const useContractReadFunction = (args: UseContractReadFunctionArgs) => {
       context.client.callContractReadFunction({
         contractAccountId: args.contractAccountId,
         functionName: args.functionName,
+        functionArgs: args.functionArgs,
         options: { signal: queryArgs.signal },
       }),
   });

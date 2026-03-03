@@ -26,7 +26,8 @@ async function executeWithFallback(
     console.log('result', result);
     if (result.ok) return result.value;
 
-    // TODO implement in the future
+    // TODO implement in the future - check if a signer can sigh the tx - need to have a standard way
+    // to do it
     // if (
     //   isNatError(
     //     result.error,

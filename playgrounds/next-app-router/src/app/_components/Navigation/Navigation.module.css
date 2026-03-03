@@ -1,8 +1,8 @@
 .activeLinkContainer {
   padding: 4px 12px;
   border-radius: 8px;
-  color: white;
-  background: #12b886;
+  color: #12b886;
+  background: #12b8861a;
 }
 
 .inactiveLinkContainer {
