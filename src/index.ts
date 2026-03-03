@@ -1,3 +1,4 @@
+"use client"
 export { MainnetNearProvider } from './providers/MainnetNearProvider.tsx';
 export { TestnetNearProvider } from './providers/TestnetNearProdiver.tsx';
 export { NearProvider } from './providers/NearProvider.tsx';

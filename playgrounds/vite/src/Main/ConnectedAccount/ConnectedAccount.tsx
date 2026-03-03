@@ -6,9 +6,8 @@ export const ConnectedAccount = () => {
   const { connectedAccountId } = useConnectedAccount();
   const accountInfo = useAccountInfo({ accountId: connectedAccountId });
 
-  console.log(accountInfo);
-
-  if (accountInfo.isPending) return <Text>Waiting for connected account...</Text>;
+  if (accountInfo.isPending)
+    return <Text>Waiting for connected account...</Text>;
 
   if (accountInfo.isError)
     return <Text>Error during loading the account info...</Text>;
