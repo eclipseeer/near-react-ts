@@ -73,12 +73,12 @@ const ContractRecords = () => {
     <Card padding="xl" radius="lg" withBorder>
       <Stack gap="md">
         <Group justify="space-between">
-          <div>
+          <Stack style={{ gap: '2px' }}>
             <Title order={3}>Contract Records</Title>
             <Text size="sm" c="dimmed">
               Reading from {CONTRACT_ACCOUNT_ID}.
             </Text>
-          </div>
+          </Stack>
           <Badge variant="light" color="teal">
             {records.data?.result ? (records.data.result as any[]).length : 0}
           </Badge>

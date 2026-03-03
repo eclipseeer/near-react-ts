@@ -1,3 +1,18 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 48px 24px 64px;
+  font-family: var(--font-body);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
 .header {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -29,4 +44,9 @@
 .subtitle {
   color: var(--ink-soft);
   max-width: 380px;
+}
+
+
+.recordInput {
+  flex: 1;
 }
