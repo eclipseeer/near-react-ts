@@ -3,23 +3,22 @@ import type {
   AccountId,
   BaseDeserializeResultFn,
   BaseSerializeArgsFn,
+  BlockReference,
   CallContractReadFunctionError,
   CallContractReadFunctionOutput,
-  Client,
   MaybeBaseDeserializeResultFn,
   MaybeBaseSerializeArgsFn,
   MaybeJsonLikeValue,
+  PartialTransportPolicy,
 } from 'near-api-ts';
 import type { KeyIf } from '../common.ts';
-
-type GetBlockArgs = NonNullable<Parameters<Client['getBlock']>[0]>;
 
 export type BaseUseContractReadFunctionArgs = {
   contractAccountId: AccountId;
   functionName: string;
-  withStateAt?: GetBlockArgs['blockReference'];
+  withStateAt?: BlockReference;
   policies?: {
-    transport?: NonNullable<GetBlockArgs['policies']>['transport'];
+    transport?: PartialTransportPolicy;
   };
   query?: {
     enabled?: boolean;
@@ -27,10 +26,10 @@ export type BaseUseContractReadFunctionArgs = {
 };
 
 export type InnerUseContractReadFunctionArgs = BaseUseContractReadFunctionArgs & {
-  functionArgs?: unknown;
+  functionArgs?: any;
   options?: {
     signal?: AbortSignal;
-    serializeArgs?: BaseSerializeArgsFn<unknown>;
+    serializeArgs?: BaseSerializeArgsFn<any>;
     deserializeResult?: BaseDeserializeResultFn;
   };
 };

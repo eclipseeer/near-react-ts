@@ -17,24 +17,15 @@ import { useState } from 'react';
 import { useConnectedAccount, useContractReadFunction } from 'react-near-ts';
 import styles from '@/app/_components/Topbar/Topbar.module.css';
 import { useAddRecord } from '@/app/contract-records/useAddRecord';
+import { useReadRecords } from '@/app/contract-records/useReadRecords';
 import { useRemoveRecord } from '@/app/contract-records/useRemoveRecord';
 
-const CONTRACT_ACCOUNT_ID = 'react-near-ts.lantstool.testnet';
-
 const ContractRecords = () => {
-  const { connectedAccountId, isConnectedAccount } = useConnectedAccount();
+  const { isConnectedAccount } = useConnectedAccount();
   const [recordInput, setRecordInput] = useState('');
+  const records = useReadRecords();
   const { addRecord, addRecordMutation } = useAddRecord(setRecordInput);
   const { removeRecord, removeRecordMutation } = useRemoveRecord();
-
-  const records = useContractReadFunction({
-    contractAccountId: CONTRACT_ACCOUNT_ID,
-    functionName: 'get_records',
-    functionArgs: { author_id: connectedAccountId },
-    query: {
-      enabled: isConnectedAccount,
-    },
-  });
 
   if (!isConnectedAccount) {
     return (
@@ -55,8 +46,7 @@ const ContractRecords = () => {
       </Group>
     );
 
-  if (records.isError)
-    return <Text c="red">Failed to load contract records.</Text>;
+  if (records.isError) return <Text c="red">Failed to load contract records.</Text>;
 
   return (
     <Card padding="xl" radius="lg" withBorder>
@@ -65,16 +55,16 @@ const ContractRecords = () => {
           <Stack style={{ gap: '2px' }}>
             <Title order={3}>Contract Records</Title>
             <Text size="sm" c="dimmed">
-              Reading from {CONTRACT_ACCOUNT_ID}
+              Reading from react-near-ts.lantstool.testnet
             </Text>
           </Stack>
           <Badge variant="light" color="teal">
-            {(records.data.result as any[]).length}
+            {records.data.result.length}
           </Badge>
         </Group>
 
         <Stack gap="xs">
-          {(records.data.result as any[]).map((record, index) => (
+          {records.data.result.map((record, index) => (
             <Paper key={`${record}-${index}`} p="sm" radius="md" withBorder>
               <Group justify="space-between" align="center">
                 <Group gap="xs">
@@ -82,11 +72,7 @@ const ContractRecords = () => {
                   <Text> {record}</Text>
                 </Group>
                 {isConnectedAccount && (
-                  <ActionIcon
-                    color="red"
-                    variant="light"
-                    onClick={() => removeRecord(index)}
-                  >
+                  <ActionIcon color="red" variant="light" onClick={() => removeRecord(index)}>
                     ×
                   </ActionIcon>
                 )}

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import type {
-  UseContractReadFunction,
   InnerUseContractReadFunctionArgs,
+  UseContractReadFunction,
 } from '../../types/hooks/useContractReadFunction.ts';
 import { useNearStore } from '../store/NearStoreProvider.tsx';
 
@@ -21,15 +21,12 @@ export const useContractReadFunction: UseContractReadFunction = (
       callArgs.functionName,
       callArgs.functionArgs,
       callArgs.withStateAt,
-      callArgs.policies,
     ],
     queryFn: ({ signal }) =>
       context.client.callContractReadFunction({
-        contractAccountId: args.contractAccountId,
-        functionName: args.functionName,
-        functionArgs: args.functionArgs,
+        ...callArgs,
         options: {
-          serializeArgs: args.options?.serializeArgs,
+          ...callArgs.options,
           signal,
         },
       }),
