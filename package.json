@@ -12,13 +12,13 @@
   },
   "peerDependencies": {
     "@tanstack/react-query": ">=5.90.21 <6",
-    "react": "19.x",
-    "react-dom": "19.x",
+    "react": ">=19.2.0 <20",
+    "react-dom": ">=19.2.0 <20",
     "zod": ">=4.3.0 <5"
   },
   "dependencies": {
     "@hot-labs/near-connect": "^0.10.0",
-    "near-api-ts": "^0.7.1",
+    "near-api-ts": "link:../near-ts/packages/near-api-ts",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
