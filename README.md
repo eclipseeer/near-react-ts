@@ -1,73 +1,189 @@
-# React + TypeScript + Vite
+# react-near-ts
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TypeScript-first React wrapper for `near-api-ts` with built-in wallet connection
+via `@hot-labs/near-connect`.
 
-Currently, two official plugins are available:
+#### Live demo: https://react-near-ts-next-playground.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
 
-## React Compiler
-
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm add react-near-ts react react-dom @tanstack/react-query zod
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Quick Start
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+For mainnet:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+```tsx
+import { MainnetNearProvider } from 'react-near-ts';
+
+export const App = () => (
+  <MainnetNearProvider>
+    <h1>Hello, Near!</h1>
+  </MainnetNearProvider>
+);
+```
+
+For testnet:
+
+```tsx
+import { TestnetNearProvider } from 'react-near-ts';
+
+export const App = () => (
+  <TestnetNearProvider>
+    <h1>Hello, Near!</h1>
+  </TestnetNearProvider>
+);
+```
+
+### Custom setup
+
+```tsx
+import {
+  NearProvider,
+  createNearStore,
+  createClient,
+  createNearConnectorService,
+} from 'react-near-ts';
+
+const clientCreator = () => createClient({
+  transport: {
+    rpcEndpoints: {
+      regular: [{ url: 'https://free.rpc.fastnear.com' }],
+      archival: [{ url: 'https://1rpc.io/near' }],
     },
   },
-])
+});
+
+const nearStore = createNearStore({
+  networkId: 'mainnet',
+  clientCreator,
+  serviceCreator: createNearConnectorService({ networkId: 'mainnet' }),
+});
+
+export const App = ({ children }: { children: React.ReactNode }) => (
+  <NearProvider nearStore={nearStore}>{children}</NearProvider>
+);
 ```
+
+## Hooks
+
+### `useNearConnector`
+
+Connect/disconnect wallet.
+
+```tsx
+import { useNearConnector } from 'react-near-ts';
+
+const { connect, disconnect } = useNearConnector();
+
+<button onClick={() => connect.mutate()}>Connect</button>
+<button onClick={() => disconnect.mutate()}>Disconnect</button>
+```
+
+### `useConnectedAccount`
+
+Read current connected account id.
+
+```tsx
+import { useConnectedAccount } from 'react-near-ts';
+
+const { connectedAccountId, isConnectedAccount } = useConnectedAccount();
+```
+
+### `useAccountInfo`
+
+Fetch account info via JSON RPC.
+
+```tsx
+import { useAccountInfo } from 'react-near-ts';
+
+const accountInfo = useAccountInfo({ accountId: 'example.testnet' });
+
+if (accountInfo.isSuccess) {
+  console.log(accountInfo.data.accountInfo.balance.total.near);
+}
+```
+
+### `useContractReadFunction`
+
+Call read-only contract methods.
+
+```tsx
+import {
+  useContractReadFunction,
+  fromJsonBytes,
+  type DeserializeResultFnArgs,
+} from 'react-near-ts';
+import * as z from 'zod/mini';
+
+const ResultSchema = z.array(z.string());
+
+const deserializeResult = ({ rawResult }: DeserializeResultFnArgs) =>
+  ResultSchema.parse(fromJsonBytes(rawResult));
+
+const records = useContractReadFunction({
+  contractAccountId: 'react-near-ts.lantstool.testnet',
+  functionName: 'get_records',
+  functionArgs: { author_id: 'example.testnet' },
+  withStateAt: 'LatestOptimisticBlock',
+  options: { deserializeResult },
+});
+```
+
+### `useExecuteTransaction`
+
+Send signed transaction from connected wallet.
+
+```tsx
+import {
+  transfer,
+  functionCall,
+  useExecuteTransaction,
+} from 'react-near-ts';
+
+const executeTransaction = useExecuteTransaction();
+
+// Transfer
+executeTransaction.mutate({
+  intent: {
+    action: transfer({ amount: { near: '0.1' } }),
+    receiverAccountId: 'receiver.testnet',
+  },
+});
+
+// Function call
+executeTransaction.mutate({
+  intent: {
+    action: functionCall({
+      functionName: 'add_record',
+      functionArgs: { record: 'hello' },
+      gasLimit: { teraGas: '10' },
+    }),
+    receiverAccountId: 'react-near-ts.lantstool.testnet',
+  },
+});
+```
+
+## Re-exports from `near-api-ts`
+
+`react-near-ts` also re-exports common client creators, action creators and
+utils, including:
+
+- `createMainnetClient`, `createTestnetClient`, `createClient`
+- `transfer`, `functionCall`, `createAccount`, `stake`, ...
+- `near`, `yoctoNear`, `teraGas`, `fromJsonBytes`, `toJsonBytes`, ...
+
+## Playground
+
+See a full working example (Next.js App Router):
+
+- `playgrounds/react-near-ts/next-app-router`
+
+It demonstrates:
+
+- wallet connect/disconnect
+- account info fetch
+- token transfer
+- contract read/write flows

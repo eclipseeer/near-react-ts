@@ -1,69 +1,34 @@
 import { useMutation } from '@tanstack/react-query';
-import type { TransactionIntent } from 'near-api-ts';
 import { useNearStore } from '../store/NearStoreProvider.tsx';
-import type { Signer } from '../store/nearStore.ts';
+import type { StoreContext } from '../../types/store.ts';
+import type {
+  UseExecuteTransaction,
+  ExecuteTransactionArgs,
+} from '../../types/hooks/useExecuteTransaction.ts';
 
-type ExecuteTxArgs = {
-  intent: TransactionIntent;
-  query?: {
-    invalidateKeys?: string[];
-  };
-};
+const tryOnManySigners = async (args: ExecuteTransactionArgs, context: StoreContext) => {
+  const signers = context.signers;
+  if (signers.length === 0) throw new Error('No signers available');
 
-async function executeWithFallback(
-  intent: TransactionIntent,
-  signers: Signer[],
-) {
-  if (signers.length === 0) {
-    throw new Error('No signers found'); // TODO throw rntError
-  }
+  const executeTransaction = async (signerIndex: number) => {
+    const signer = signers[signerIndex];
 
-  for (let i = 0; i < signers.length; i++) {
-    const signer = signers[i];
-    if (!signer) continue;
-
-    const result = await signer.safeExecuteTransaction({ intent });
-    console.log('result', result);
+    const result = await signer.safeExecuteTransaction({ intent: args.intent });
     if (result.ok) return result.value;
 
-    // TODO implement in the future - check if a signer can sigh the tx - need to have a standard way
-    // to do it
-    // if (
-    //   isNatError(
-    //     result.error,
-    //     'MemorySigner.ExecuteTransaction.KeyPool.SigningKey.NotFound',
-    //   )
-    // ) {
-    //   continue;
-    // }
-
+    // TODO right now we only support one signer - we will support multiple signers after adding
+    // canExecuteTransaction method to all signers
     throw result.error;
-  }
+  };
 
-  throw new Error('No usable signer found');
-}
+  return executeTransaction(0);
+};
 
-export function useExecuteTransaction() {
-  const connectedAccountId = useNearStore((s) => s.connectedAccountId);
+export const useExecuteTransaction: UseExecuteTransaction = () => {
   const getContext = useNearStore((s) => s.getContext);
   const context = getContext();
 
   return useMutation({
-    mutationKey: ['executeTransaction', connectedAccountId],
-
-    mutationFn: ({ intent }: ExecuteTxArgs) =>
-      executeWithFallback(intent, context.signers),
-
-    onSuccess: async (_, variables, ___, context) => {
-      if (variables?.query?.invalidateKeys) {
-        // We need to wait a bit for the transaction to be processed
-        // cuz the wallets wait until ExecutedOptimistic instead of Final tx status
-        await new Promise((resolve) => setTimeout(resolve, 500)); // TODO move to config
-
-        void context.client.invalidateQueries({
-          queryKey: variables.query.invalidateKeys,
-        });
-      }
-    },
+    mutationFn: (args) => tryOnManySigners(args, context),
   });
-}
+};

@@ -1,15 +1,16 @@
 import { createNearStore } from '../store/nearStore.ts';
 import { createTestnetClient } from 'near-api-ts';
-import { createNearConnectorService } from '../services/nearConnector/createNearConnectorService.ts';
+import { createNearConnectorService } from '../services/nearConnector/nearConnector.ts';
 import { NearProvider } from './NearProvider.tsx';
+import type { ReactNode } from 'react';
 
 const createTestnetNearStore = () =>
   createNearStore({
     networkId: 'testnet',
-    createClient: createTestnetClient,
-    serviceCreators: [createNearConnectorService({ networkId: 'testnet' })],
+    clientCreator: createTestnetClient,
+    serviceCreator: createNearConnectorService({ networkId: 'testnet' }),
   });
 
-export const TestnetNearProvider = ({ children }: any) => (
-  <NearProvider nearStore={createTestnetNearStore()}>{children}</NearProvider>
+export const TestnetNearProvider = (props: { children: ReactNode }) => (
+  <NearProvider nearStore={createTestnetNearStore()}>{props.children}</NearProvider>
 );
